@@ -1,32 +1,39 @@
 package com.example;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Приложение для захвата и обработки изображений,
- * позволяет пользователю выбрать изображение с диска или сделать снимок с веб-камеры.
+ * Основной класс приложения для захвата и обработки изображений.
+ * Приложение позволяет пользователю выбрать изображение с диска или сделать снимок с веб-камеры.
  * Также предоставляет возможности для выполнения различных операций над изображением, таких как:
  * - Показать красный, зеленый или синий канал изображения.
  * - Обрезать изображение по заданным координатам.
  * - Вращать изображение на заданный угол.
  * - Нарисовать прямоугольник на изображении синим цветом по заданным координатам.
+ * - Вернуть изображение к первоначальному состоянию.
  */
-
 public class MainApp {
 
   public static void main(String[] args) {
     OperationsWithImages.loadOpenCVLibrary();
 
-    // GUI
-    JFrame frame = new JFrame("Image Capture");
+    JFrame frame = new JFrame("Работа с изображениями");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(1024, 768);
+
+    JLabel imageLabel = new JLabel();
+    OperationsWithImages.setImageLabel(imageLabel);
+
     JButton chooseImageButton = new JButton("Выбрать изображение");
     JButton captureImageButton = new JButton("Сделать снимок с веб-камеры");
     JButton showChannelButton = new JButton("Показать канал");
     JButton cropImageButton = new JButton("Обрезать изображение");
     JButton rotateImageButton = new JButton("Вращать изображение");
     JButton drawRectangleButton = new JButton("Нарисовать прямоугольник");
+    JButton resetImageButton = new JButton("Сбросить изображение");
 
     JTextField channelInput = new JTextField(5);
     JTextField cropXInput = new JTextField(5);
@@ -91,30 +98,41 @@ public class MainApp {
       }
     });
 
-    frame.setLayout(new java.awt.FlowLayout());
-    frame.add(chooseImageButton);
-    frame.add(captureImageButton);
-    frame.add(new JLabel("Канал (Red/Green/Blue):"));
-    frame.add(channelInput);
-    frame.add(showChannelButton);
-    frame.add(new JLabel("Обрезка (x, y, width, height):"));
-    frame.add(cropXInput);
-    frame.add(cropYInput);
-    frame.add(cropWidthInput);
-    frame.add(cropHeightInput);
-    frame.add(cropImageButton);
-    frame.add(new JLabel("Угол вращения:"));
-    frame.add(rotateAngleInput);
-    frame.add(rotateImageButton);
-    frame.add(new JLabel("Прямоугольник (x, y, width, height):"));
-    frame.add(rectXInput);
-    frame.add(rectYInput);
-    frame.add(rectWidthInput);
-    frame.add(rectHeightInput);
-    frame.add(drawRectangleButton);
+    resetImageButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        OperationsWithImages.resetImage();
+      }
+    });
 
-    frame.setSize(500, 400);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JPanel controlsPanel = new JPanel();
+    controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
+
+    controlsPanel.add(chooseImageButton);
+    controlsPanel.add(captureImageButton);
+    controlsPanel.add(new JLabel("Канал (Red/Green/Blue):"));
+    controlsPanel.add(channelInput);
+    controlsPanel.add(showChannelButton);
+    controlsPanel.add(new JLabel("Обрезка (x, y, width, height):"));
+    controlsPanel.add(cropXInput);
+    controlsPanel.add(cropYInput);
+    controlsPanel.add(cropWidthInput);
+    controlsPanel.add(cropHeightInput);
+    controlsPanel.add(cropImageButton);
+    controlsPanel.add(new JLabel("Угол вращения:"));
+    controlsPanel.add(rotateAngleInput);
+    controlsPanel.add(rotateImageButton);
+    controlsPanel.add(new JLabel("Прямоугольник (x, y, width, height):"));
+    controlsPanel.add(rectXInput);
+    controlsPanel.add(rectYInput);
+    controlsPanel.add(rectWidthInput);
+    controlsPanel.add(rectHeightInput);
+    controlsPanel.add(drawRectangleButton);
+    controlsPanel.add(resetImageButton);
+
+    frame.setLayout(new BorderLayout());
+    frame.add(controlsPanel, BorderLayout.WEST);
+    frame.add(new JScrollPane(imageLabel), BorderLayout.CENTER);
     frame.setVisible(true);
   }
 }
